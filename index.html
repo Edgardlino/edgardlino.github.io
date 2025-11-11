@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Custos de Impressão 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .input-group label {
+            color: #cbd5e1; /* slate-300 */
+        }
+        .input-group input {
+            background-color: #334155; /* slate-700 */
+            border-color: #475569; /* slate-600 */
+            color: #f1f5f9; /* slate-100 */
+        }
+        .result-card h3 {
+            color: #94a3b8; /* slate-400 */
+            font-weight: 500;
+        }
+        .result-card p {
+            color: #f1f5f9; /* slate-100 */
+            font-weight: 600;
+        }
+        .final-price {
+            background: linear-gradient(to right, #1e40af, #3b82f6);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white">Calculadora de Custos de Impressão 3D</h1>
+            <p class="text-slate-400 mt-2">Calcule o preço final da sua peça com precisão.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Coluna de Entradas -->
+            <div class="bg-slate-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-6 text-white border-b border-slate-700 pb-3">Parâmetros de Custo</h2>
+                
+                <!-- Custos do Material -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-blue-400 mb-3">Material</h3>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label for="filamentCostKg" class="block text-sm font-medium mb-1">Custo do Filamento (R$/kg)</label>
+                            <input type="number" id="filamentCostKg" value="120" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="input-group">
+                            <label for="filamentGrams" class="block text-sm font-medium mb-1">Material Gasto na Peça (g)</label>
+                            <input type="number" id="filamentGrams" value="50" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custos Operacionais -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-blue-400 mb-3">Custos Operacionais</h3>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label for="printHours" class="block text-sm font-medium mb-1">Tempo de Impressão (horas)</label>
+                            <input type="number" id="printHours" value="4.5" step="0.1" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="input-group">
+                            <label for="printerConsumptionW" class="block text-sm font-medium mb-1">Consumo da Impressora (Watts)</label>
+                            <input type="number" id="printerConsumptionW" value="250" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                         <div class="input-group">
+                            <label for="kwhCost" class="block text-sm font-medium mb-1">Custo da Energia (R$/kWh)</label>
+                            <input type="number" id="kwhCost" value="0.92" step="0.01" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investimento e Lucro -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-400 mb-3">Investimento e Lucro</h3>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label for="printerValue" class="block text-sm font-medium mb-1">Valor da Impressora (R$)</label>
+                            <input type="number" id="printerValue" value="1500" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="input-group">
+                            <label for="printerLifespanHours" class="block text-sm font-medium mb-1">Vida Útil da Impressora (horas)</label>
+                            <input type="number" id="printerLifespanHours" value="5000" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="input-group">
+                            <label for="profitMargin" class="block text-sm font-medium mb-1">Margem de Lucro (%)</label>
+                            <input type="number" id="profitMargin" value="100" class="w-full p-2 rounded-md border focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna de Resultados -->
+            <div class="bg-slate-800 p-6 rounded-lg shadow-lg flex flex-col">
+                <h2 class="text-2xl font-semibold mb-6 text-white border-b border-slate-700 pb-3">Resumo dos Custos</h2>
+                <div class="space-y-4 flex-grow">
+                    <div class="result-card bg-slate-700 p-4 rounded-lg">
+                        <h3 class="text-sm">Custo do Filamento</h3>
+                        <p id="filamentCostResult" class="text-2xl">R$ 0,00</p>
+                    </div>
+                    <div class="result-card bg-slate-700 p-4 rounded-lg">
+                        <h3 class="text-sm">Custo de Energia</h3>
+                        <p id="energyCostResult" class="text-2xl">R$ 0,00</p>
+                    </div>
+                    <div class="result-card bg-slate-700 p-4 rounded-lg">
+                        <h3 class="text-sm">Depreciação da Impressora</h3>
+                        <p id="depreciationCostResult" class="text-2xl">R$ 0,00</p>
+                    </div>
+                    <div class="result-card bg-slate-700 p-4 rounded-lg">
+                        <h3 class="text-sm">Custo Total de Produção</h3>
+                        <p id="totalCostResult" class="text-2xl font-bold text-amber-400">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="mt-6 final-price text-white p-6 rounded-lg text-center">
+                    <h3 class="text-lg font-medium opacity-80">Preço Final de Venda (com lucro)</h3>
+                    <p id="finalPriceResult" class="text-5xl font-bold">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rodapé com créditos -->
+        <footer class="text-center py-8">
+            <p class="text-slate-500 text-sm">
+                Feito por 
+                <a href="https://www.instagram.com/protoorbe/" target="_blank" rel="noopener noreferrer" class="font-semibold text-blue-400 hover:text-blue-300 hover:underline">
+                    @protoorbe
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Seleciona todos os elementos de entrada e saída
+        const inputs = {
+            filamentCostKg: document.getElementById('filamentCostKg'),
+            filamentGrams: document.getElementById('filamentGrams'),
+            printHours: document.getElementById('printHours'),
+            printerConsumptionW: document.getElementById('printerConsumptionW'),
+            kwhCost: document.getElementById('kwhCost'),
+            printerValue: document.getElementById('printerValue'),
+            printerLifespanHours: document.getElementById('printerLifespanHours'),
+            profitMargin: document.getElementById('profitMargin')
+        };
+
+        const outputs = {
+            filamentCostResult: document.getElementById('filamentCostResult'),
+            energyCostResult: document.getElementById('energyCostResult'),
+            depreciationCostResult: document.getElementById('depreciationCostResult'),
+            totalCostResult: document.getElementById('totalCostResult'),
+            finalPriceResult: document.getElementById('finalPriceResult')
+        };
+
+        // Função para formatar números como moeda brasileira
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Função principal para calcular os custos
+        function calculateCosts() {
+            // 1. Coleta e converte os valores dos inputs, tratando valores nulos ou inválidos
+            const filamentCostKg = parseFloat(inputs.filamentCostKg.value) || 0;
+            const filamentGrams = parseFloat(inputs.filamentGrams.value) || 0;
+            const printHours = parseFloat(inputs.printHours.value) || 0;
+            const printerConsumptionW = parseFloat(inputs.printerConsumptionW.value) || 0;
+            const kwhCost = parseFloat(inputs.kwhCost.value) || 0;
+            const printerValue = parseFloat(inputs.printerValue.value) || 0;
+            const printerLifespanHours = parseFloat(inputs.printerLifespanHours.value) || 1; // Evita divisão por zero
+            const profitMargin = parseFloat(inputs.profitMargin.value) || 0;
+
+            // 2. Realiza os cálculos
+            // Custo do filamento: (preço do kg / 1000g) * gramas usadas
+            const filamentCost = (filamentCostKg / 1000) * filamentGrams;
+            
+            // Custo de energia: (consumo em kW * horas de impressão) * preço do kWh
+            const energyCost = (printerConsumptionW / 1000) * printHours * kwhCost;
+            
+            // Custo de depreciação: (valor da impressora / vida útil em horas) * horas de impressão
+            const depreciationCost = (printerValue / printerLifespanHours) * printHours;
+            
+            // Custo total: soma dos custos individuais
+            const totalCost = filamentCost + energyCost + depreciationCost;
+            
+            // Valor do lucro: custo total * (margem / 100)
+            const profitAmount = totalCost * (profitMargin / 100);
+            
+            // Preço final: custo total + lucro
+            const finalPrice = totalCost + profitAmount;
+
+            // 3. Atualiza os elementos na tela com os valores formatados
+            outputs.filamentCostResult.textContent = formatCurrency(filamentCost);
+            outputs.energyCostResult.textContent = formatCurrency(energyCost);
+            outputs.depreciationCostResult.textContent = formatCurrency(depreciationCost);
+            outputs.totalCostResult.textContent = formatCurrency(totalCost);
+            outputs.finalPriceResult.textContent = formatCurrency(finalPrice);
+        }
+
+        // Adiciona um 'event listener' para cada input
+        // Isso faz com que o cálculo seja refeito automaticamente ao alterar qualquer valor
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', calculateCosts);
+        });
+
+        // Executa a função uma vez quando a página carrega para mostrar os valores iniciais
+        window.addEventListener('load', calculateCosts);
+    </script>
+
+</body>
+</html>
